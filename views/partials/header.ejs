@@ -1,0 +1,13 @@
+<header class="header" id="header">
+  <div class="container nav">
+    <nav class="nav__links" aria-label="Primary navigation"><a href="/" class="<%= page === 'home' ? 'active' : '' %>">Home</a><a href="/shop" class="<%= page === 'shop' ? 'active' : '' %>">Shop</a><a href="/recipes" class="<%= page === 'recipes' ? 'active' : '' %>">Recipes</a><a href="/story" class="<%= page === 'story' ? 'active' : '' %>">About Us</a><a href="/contact" class="<%= page === 'contact' ? 'active' : '' %>">Contact</a></nav>
+    <a class="nav__brand" href="/" aria-label="Mills Smoke and Grill home"><img src="/assets/images/logo-horizontal.png" alt="Mills Smoke & Grill"></a>
+    <div class="nav__actions">
+      <a class="icon-btn" href="/shop" aria-label="Search products"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg></a>
+      <a class="icon-btn" href="/account" aria-label="Open account" title="Account"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.5"/><path d="M4.5 20c.8-3.4 3.2-5.5 7.5-5.5s6.7 2.1 7.5 5.5"/></svg></a>
+      <button class="icon-btn" type="button" aria-label="Open cart" data-cart-open><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 8h12l1 13H5L6 8Z"/><path d="M9 9V6a3 3 0 0 1 6 0v3"/></svg><span class="cart-count">0</span></button>
+      <button class="icon-btn mobile-toggle" id="mobile-toggle" type="button" aria-expanded="false" aria-controls="mobile-menu" aria-label="Open menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    </div>
+  </div>
+</header>
+<nav class="mobile-menu" id="mobile-menu" aria-label="Mobile navigation"><a href="/" class="<%= page === 'home' ? 'active' : '' %>">Home</a><a href="/shop" class="<%= page === 'shop' ? 'active' : '' %>">Shop</a><a href="/recipes" class="<%= page === 'recipes' ? 'active' : '' %>">Recipes</a><a href="/story" class="<%= page === 'story' ? 'active' : '' %>">About Us</a><a href="/contact" class="<%= page === 'contact' ? 'active' : '' %>">Contact</a></nav><main id="main">

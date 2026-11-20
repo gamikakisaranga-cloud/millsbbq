@@ -1,0 +1,130 @@
+<%- include('partials/head', { title: 'Your Account | Mills Smoke & Grill', description: 'Manage your customer account.' }) %>
+<%- include('partials/header', { page: 'account' }) %>
+<section class="section"><div class="container">
+  <div id="signin" class="account-auth">
+    <div class="account-auth__intro"><span class="eyebrow">Customer account</span><h1 class="display display--lg">Good to see you.</h1><p class="lead">Sign in to check your orders, manage your details and keep your favourites close.</p></div>
+    <form class="checkout-card form-grid account-login" id="login">
+      <div class="account-login__heading"><span class="eyebrow">Your account</span><h2 class="display display--md" id="login-title">Sign in</h2></div>
+      <div class="field account-register-field" hidden><label for="login-first-name">First name</label><input id="login-first-name" name="firstName" autocomplete="given-name" disabled></div>
+      <div class="field account-register-field" hidden><label for="login-last-name">Last name</label><input id="login-last-name" name="lastName" autocomplete="family-name" disabled></div>
+      <div class="field field--full"><label for="login-email">Email address</label><input id="login-email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required></div>
+      <div class="field field--full"><label for="login-password">Password</label><input id="login-password" name="password" type="password" autocomplete="current-password" placeholder="Enter your password" required></div>
+      <div class="field account-register-field field--full" hidden><label for="login-phone">Phone</label><input id="login-phone" name="phone" type="tel" autocomplete="tel" minlength="7" disabled></div>
+      <div class="field account-register-field field--full" hidden><label for="login-address">Address</label><input id="login-address" name="address" autocomplete="street-address" minlength="3" disabled></div>
+      <div class="field account-register-field field--full" hidden><label style="display:flex;align-items:flex-start;gap:10px"><input type="checkbox" name="marketingOptIn" value="true" disabled style="width:auto;min-height:auto;margin-top:3px"> Send me recipes, product releases and grilling tips from Mills Smoke &amp; Grill.</label></div>
+      <div class="account-form-actions field--full"><button class="btn btn--primary" id="login-submit" type="submit">Sign in</button><button class="btn btn--ghost" type="button" id="register">Create account</button></div>
+      <p id="login-message" class="muted field--full" role="status" aria-live="polite"></p>
+      <button class="btn btn--ghost field--full" id="resend-verification" type="button" hidden>Resend verification email</button>
+      <button class="btn btn--ghost field--full" id="forgot-password" type="button">Forgot password?</button>
+    </form>
+  </div>
+  <div id="account" hidden data-initial-tab="<%= initialTab || 'dashboard' %>" data-order-id="<%= typeof orderId !== 'undefined' ? orderId : '' %>"><div class="section-head"><div><span class="eyebrow">Customer account</span><h1 class="display display--lg" id="welcome"></h1></div><button class="btn btn--ghost" id="logout">Sign out</button></div><nav class="account-tabs"><button data-tab="dashboard">Dashboard</button><button data-tab="orders">My Orders</button><button data-tab="profile">Personal Information</button><button data-tab="addresses">Addresses</button><button data-tab="wishlist">Wishlist</button><button data-tab="cart">Shopping Cart</button><button data-tab="payments">Payment Methods</button><button data-tab="security">Security & Preferences</button></nav><div id="panel" class="checkout-card"></div></div>
+</div></section>
+<style>
+  .account-auth { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, .85fr); gap: clamp(32px, 8vw, 110px); align-items: center; max-width: 1050px; margin: 0 auto; }
+  .account-auth__intro .lead { max-width: 440px; color: #9a958c; }
+  .account-login { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+  .account-login__heading { grid-column: 1 / -1; }
+  .account-login__heading h2 { margin: 8px 0 0; }
+  .account-form-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+  .account-form-actions .btn { flex: 1; justify-content: center; }
+  .account-login input { width: 100%; border: 1px solid var(--line); background: rgba(255,255,255,.035); color: white; border-radius: 13px; min-height: 52px; padding: 12px 15px; outline: 0; color-scheme: dark; }
+  .account-login input:focus { border-color: var(--ember); box-shadow: 0 0 0 3px rgba(255,90,24,.1); }
+  .account-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin: 24px 0; }
+  .account-tabs button { border: 1px solid var(--line); background: transparent; color: inherit; padding: 10px 13px; border-radius: 8px; cursor: pointer; }
+  .account-tabs button.active { background: var(--ember); color: #fff; }
+  .account-list { display: grid; gap: 14px; }
+  .account-row { border-bottom: 1px solid var(--line); padding: 14px 0; display: flex; justify-content: space-between; gap: 12px; }
+  .account-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+  #panel .category-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); grid-template-rows: none; gap: 14px; margin: 18px 0 32px; }
+  #panel .category-card, #panel .category-card:first-child { grid-column: auto; grid-row: auto; min-height: 145px; border-color: var(--line); background: rgba(255,255,255,.025); }
+  #panel .category-card::before, #panel .category-card::after { display: none; }
+  #panel .category-card__content { position: relative; inset: auto; padding: 20px; }
+  #panel .category-card__content span { color: #9a958c; }
+  #panel .category-card__content h3 { margin-top: 12px; font-size: clamp(1.7rem, 3vw, 2.5rem); line-height: 1; overflow-wrap: anywhere; }
+  @media (max-width: 700px) { .account-auth { grid-template-columns: 1fr; } #panel .category-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 420px) { #panel .category-grid { grid-template-columns: 1fr; } }
+</style>
+<script>
+(()=>{const signin=document.getElementById('signin'),account=document.getElementById('account'),panel=document.getElementById('panel'),money=n=>new Intl.NumberFormat('en-AU',{style:'currency',currency:'AUD'}).format(Number(n)/100),esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])),api=async(p,o)=>{const r=await fetch('/api/account'+p,o),d=await r.json();if(!r.ok)throw Error(d.error||'Request failed');return d};let mode='login';
+function tab(name){document.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('active',b.dataset.tab===name));if(name==='dashboard')dashboard();if(name==='orders')orders();if(name==='profile')profile();if(name==='addresses')addresses();if(name==='wishlist')wishlist();if(name==='cart')cart();if(name==='payments')payments();if(name==='security')security()}document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>tab(b.dataset.tab));
+function dashboard(){api('/dashboard').then(d=>{panel.innerHTML=`<span class="eyebrow">Overview</span><h2 class="display display--md">Dashboard</h2><div class="grid category-grid">${[['Orders',d.summary.orderCount],['Wishlist',d.summary.wishlistCount],['Addresses',d.summary.addressCount],['Lifetime spend',money(d.summary.lifetimeCents)]].map(x=>`<article class="category-card"><div class="category-card__content"><span>${x[0]}</span><h3>${esc(x[1])}</h3></div></article>`).join('')}</div><h3>Recent orders</h3><div class="account-list">${d.recentOrders.map(o=>row(o)).join('')||'<p class="muted">No orders yet.</p>'}</div>`;welcome.textContent='Welcome back, '+(d.user.firstName||'customer')+'.'})}function row(o){return `<div class="account-row"><span><strong>${esc(o.orderNumber)}</strong><br><small class="muted">${new Date(o.createdAt).toLocaleDateString('en-AU')} Â· ${esc(o.status)}</small></span><strong>${money(o.totalCents)}</strong></div>`}
+async function orders(){const d=await api('/orders');panel.innerHTML='<h2 class="display display--md">My Orders</h2><div class="account-list">'+(d.orders.map(o=>`<article><div class="account-row"><span><strong>${esc(o.orderNumber)}</strong><br><small>${new Date(o.createdAt).toLocaleDateString('en-AU')} · ${esc(o.status)}</small></span><strong>${money(o.totalCents)}</strong></div><p>${o.items.map(i=>esc(i.name)+' × '+i.quantity).join('<br>')}</p><div class="account-actions"><button class="btn btn--ghost" data-order-view="${o.id}">View details</button><button class="btn btn--ghost" data-reorder="${o.id}">Reorder</button><a class="btn btn--ghost" href="/api/account/orders/${o.id}/invoice">Download invoice</a><button class="btn btn--ghost" data-request="RETURN" data-order="${o.id}">Return / refund request</button></div></article>`).join('')||'<p class="muted">No orders yet.</p>')+'</div>'}
+async function profile(){const d=await api('/dashboard');panel.innerHTML=`<h2 class="display display--md">Personal Information</h2><form id="profile-form" class="form-grid"><label>First name<input name="firstName" value="${esc(d.user.firstName)}" required></label><label>Last name<input name="lastName" value="${esc(d.user.lastName)}"></label><label>Email<input value="${esc(d.user.email)}" disabled></label><label>Phone<input name="phone" value="${esc(d.user.phone)}"></label><label>Profile picture URL<input name="profilePicture" value="${esc(d.user.profilePicture)}"></label><label>Date of birth<input name="dateOfBirth" type="date" value="${String(d.user.dateOfBirth||'').slice(0,10)}"></label><button class="btn btn--primary">Save profile</button></form>`;document.getElementById('profile-form').onsubmit=async e=>{e.preventDefault();await api('/profile',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.fromEntries(new FormData(e.target)))});profile()}}async function addresses(){const d=await api('/addresses');panel.innerHTML='<h2 class="display display--md">Addresses</h2><button class="btn btn--primary" id="new-address">Add new address</button><div class="account-list">'+(d.addresses.map(a=>`<article class="account-row"><span><strong>${esc(a.label)}</strong><br>${esc(a.address)}, ${esc(a.city)} ${esc(a.postcode)}<br><small class="muted">${a.defaultShipping?'Default shipping':''} ${a.defaultBilling?'Default billing':''}</small></span><button data-delete-address="${a.id}">Delete</button></article>`).join('')||'<p class="muted">No saved addresses.</p>')+'</div>';document.getElementById('new-address').onclick=()=>panel.insertAdjacentHTML('beforeend','<form id="address-form" class="form-grid"><input name="label" placeholder="Home" required><input name="firstName" placeholder="First name" required><input name="lastName" placeholder="Last name"><input name="address" placeholder="Address" required><input name="city" placeholder="City" required><input name="state" placeholder="State"><input name="postcode" placeholder="Postcode" required><button class="btn btn--primary">Save address</button></form>');panel.querySelector('#address-form')?.addEventListener('submit',async e=>{e.preventDefault();await api('/addresses',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.fromEntries(new FormData(e.target)))});addresses()})}async function wishlist(){const d=await api('/wishlist');panel.innerHTML='<h2 class="display display--md">Wishlist</h2>'+(d.products.map(p=>`<div class="account-row"><span>${esc(p.name)}<br>${money(p.priceCents)} Â· ${p.stock?'Available':'Unavailable'}</span><button data-remove-wishlist="${p.id}">Remove</button></div>`).join('')||'<p class="muted">Your wishlist is empty.</p>')}function cart(){const c=JSON.parse(localStorage.getItem('mills-cart')||'[]');panel.innerHTML='<h2 class="display display--md">Shopping Cart</h2><p>'+c.length+' saved cart item(s).</p><a class="btn btn--primary" href="/checkout">Checkout</a>'}async function payments(){const d=await api('/payment-methods');panel.innerHTML='<h2 class="display display--md">Payment Methods</h2><p class="muted">Only provider labels and tokens are stored. Never enter full card numbers.</p>'+(d.paymentMethods.map(p=>`<div class="account-row"><span>${esc(p.label)} Â· ${esc(p.provider)} ${p.isDefault?'Â· Default':''}</span><button data-delete-payment="${p.id}">Remove</button></div>`).join('')||'<p class="muted">No saved payment methods.</p>')}
+async function viewOrder(id){const d=await api('/orders/'+id),o=d.order;panel.innerHTML=`<button class="btn btn--ghost" id="back-orders">← Back to orders</button><h2 class="display display--md">${esc(o.orderNumber)}</h2><p>Payment: ${esc(o.paymentStatus)} · Fulfilment: ${esc(o.fulfilmentStatus)}</p><p>${esc(o.address)}, ${esc(o.city)} ${esc(o.postcode)}, ${esc(o.country)}</p>${o.trackingNumber?`<p>Tracking: ${esc(o.carrier||'Carrier')} · ${esc(o.trackingNumber)}</p>`:''}<div class="account-list">${d.items.map(i=>`<div class="account-row"><span>${esc(i.name)} × ${i.quantity}</span><strong>${money(i.priceCents*i.quantity)}</strong></div>`).join('')}</div><h3>Order timeline</h3>${d.events.map(e=>`<p class="muted">${new Date(e.createdAt).toLocaleString('en-AU')} · ${esc(e.description)}</p>`).join('')}`;document.getElementById('back-orders').onclick=orders}
+async function security(){panel.innerHTML=`<h2 class="display display--md">Security & preferences</h2><form id="password-form" class="form-grid"><label>Current password<input type="password" name="currentPassword" required></label><label>New password<input type="password" name="newPassword" minlength="10" required></label><button class="btn btn--primary">Change password</button></form><hr><h3>Account deletion</h3><p class="muted">Submit a request for the store team to review. Your account is not deleted automatically.</p><button class="btn btn--ghost" id="delete-request">Request account deletion</button><p id="security-message" class="muted"></p>`;document.getElementById('password-form').onsubmit=async e=>{e.preventDefault();const m=document.getElementById('security-message');try{await api('/password',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.fromEntries(new FormData(e.target)))});m.textContent='Password updated.';e.target.reset()}catch(err){m.textContent=err.message}};document.getElementById('delete-request').onclick=async()=>{if(!confirm('Submit an account deletion request?'))return;const m=document.getElementById('security-message');try{await api('/deletion-request',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({})});m.textContent='Deletion request submitted.'}catch(err){m.textContent=err.message}}}
+document.getElementById('logout').onclick=async()=>{await fetch('/api/auth/logout',{method:'POST'});location.reload()};document.addEventListener('click',async e=>{const t=e.target;if(t.dataset.orderView){viewOrder(t.dataset.orderView)}if(t.dataset.reorder){const d=await api('/orders/'+t.dataset.reorder+'/reorder',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({})});const cart=JSON.parse(localStorage.getItem('mills-cart')||'[]');for(const item of d.items){const old=cart.find(x=>x.id===item.id);if(old)old.qty+=item.qty;else cart.push(item)}localStorage.setItem('mills-cart',JSON.stringify(cart));alert(d.unavailableCount?`${d.unavailableCount} unavailable product(s) were skipped.`:'Available products added to your cart.');location.href='/shop'}if(t.dataset.deleteAddress){await api('/addresses/'+t.dataset.deleteAddress,{method:'DELETE'});addresses()}if(t.dataset.removeWishlist){await api('/wishlist/'+t.dataset.removeWishlist,{method:'DELETE'});wishlist()}if(t.dataset.deletePayment){await api('/payment-methods/'+t.dataset.deletePayment,{method:'DELETE'});payments()}if(t.dataset.request){await api('/orders/'+t.dataset.order+'/requests',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({type:t.dataset.request})});t.disabled=true}});api('/dashboard').then(()=>{signin.hidden=true;account.hidden=false;tab(account.dataset.initialTab||'dashboard');if(account.dataset.orderId)viewOrder(account.dataset.orderId)}).catch(()=>{})})();
+</script>
+<script>
+(()=> {
+  const form = document.getElementById('login');
+  const registerButton = document.getElementById('register');
+  const submitButton = document.getElementById('login-submit');
+  const message = document.getElementById('login-message');
+  const resendButton = document.getElementById('resend-verification');
+  const emailInput = document.getElementById('login-email');
+  if (new URLSearchParams(location.search).get('verified') === '1') message.textContent = 'Your email has been verified successfully. You can now sign in.';
+  document.getElementById('forgot-password').onclick = async () => { if(!emailInput.value){message.textContent='Enter your email address first.';emailInput.focus();return;} try { const r=await fetch('/api/auth/forgot-password',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:emailInput.value})});const d=await r.json();if(!r.ok)throw Error(d.error||'Unable to request reset.');message.textContent=d.message; } catch(e){message.textContent=e.message;} };
+  resendButton.onclick = async () => {
+    resendButton.disabled = true;
+    try {
+      const response = await fetch('/api/auth/resend-verification', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: emailInput.value }) });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || 'Unable to resend the email.');
+      message.textContent = data.message || 'If verification is required, a new link has been sent.';
+    } catch (error) { message.textContent = error.message; }
+    finally { resendButton.disabled = false; }
+  };
+  const registerFields = [...form.querySelectorAll('.account-register-field')];
+  let mode = 'login';
+
+  function setMode(nextMode) {
+    mode = nextMode;
+    const registering = mode === 'register';
+    document.getElementById('login-title').textContent = registering ? 'Create account' : 'Sign in';
+    submitButton.textContent = registering ? 'Create account' : 'Sign in';
+    registerButton.textContent = registering ? 'Back to sign in' : 'Create account';
+    document.getElementById('login-password').autocomplete = registering ? 'new-password' : 'current-password';
+    registerFields.forEach(field => {
+      field.hidden = !registering;
+      const input = field.querySelector('input');
+      input.disabled = !registering;
+      input.required = registering && !['lastName','marketingOptIn'].includes(input.name);
+    });
+    message.textContent = '';
+    resendButton.hidden = true;
+    document.getElementById('forgot-password').hidden = registering;
+  }
+
+  registerButton.onclick = () => setMode(mode === 'login' ? 'register' : 'login');
+  form.onsubmit = async event => {
+    event.preventDefault();
+    message.textContent = '';
+    submitButton.disabled = true;
+    submitButton.textContent = mode === 'register' ? 'Creating account…' : 'Signing in…';
+    try {
+      const response = await fetch(`/api/auth/${mode}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({...Object.fromEntries(new FormData(form)), marketingOptIn: form.elements.marketingOptIn?.checked || false})
+      });
+      const data = await response.json();
+      if (!response.ok) { if (data.code === 'EMAIL_NOT_VERIFIED' || data.code === 'VERIFICATION_EMAIL_FAILED') resendButton.hidden = false; throw new Error(data.error || 'Unable to sign in. Please try again.'); }
+      if (data.verificationRequired) { message.textContent = data.message || 'Check your email to verify your account.'; resendButton.hidden = false; emailInput.value = data.email || emailInput.value; form.reset(); emailInput.value = data.email || emailInput.value; return; }
+      if (mode === 'login' && data.user && ['ADMIN','OWNER','STORE_ADMIN','ORDER_MANAGER','INVENTORY_MANAGER','CUSTOMER_SUPPORT'].includes(data.user.role)) {
+        window.location.href = '/admin';
+        return;
+      }
+      document.getElementById('signin').hidden = true;
+      document.getElementById('account').hidden = false;
+      document.querySelector('[data-tab="'+(account.dataset.initialTab||'dashboard')+'"]').click();
+    } catch (error) {
+      message.textContent = error.message;
+      submitButton.textContent = mode === 'register' ? 'Create account' : 'Sign in';
+    } finally {
+      submitButton.disabled = false;
+    }
+  };
+})();
+</script>
+<%- include('partials/footer') %>

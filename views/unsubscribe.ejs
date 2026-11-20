@@ -1,0 +1,5 @@
+<%- include('partials/head', { title: 'Unsubscribe | Mills Smoke & Grill', description: 'Manage your Mills Smoke & Grill email preferences.' }) %>
+<%- include('partials/header', { page: 'contact' }) %>
+<section class="section"><div class="container" style="max-width:560px"><div class="checkout-card"><span class="eyebrow">Email preferences</span><h1 class="display display--md">Unsubscribe from updates.</h1><p id="unsubscribe-message" class="muted" data-token="<%= token %>">Updating your preferences…</p></div></div></section>
+<script>fetch('/api/newsletter/unsubscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:<%- JSON.stringify(token) %>})}).then(r=>r.json()).then(d=>document.getElementById('unsubscribe-message').textContent=d.message||'Your preferences have been updated.').catch(()=>document.getElementById('unsubscribe-message').textContent='We could not update your preferences. Please contact the store.');</script>
+<%- include('partials/footer') %>

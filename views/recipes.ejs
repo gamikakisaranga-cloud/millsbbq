@@ -1,0 +1,14 @@
+<%- include('partials/head', { title: 'BBQ Recipes | Mills Smoke & Grill', description: 'Explore BBQ recipes using Mills Smoke & Grill spice rubs.' }) %>
+<%- include('partials/header', { page: 'recipes' }) %>
+<section class="page-hero"><div class="container page-hero__inner"><div class="breadcrumbs reveal"><a href="/">Home</a> / Recipes</div><span class="eyebrow reveal reveal-delay-1">Cook with confidence</span><h1 class="display display--xl reveal reveal-delay-2">Recipes for<br>the fire.</h1><p class="lead reveal reveal-delay-3">Simple, high-impact cooks that show exactly where each Mills rub shines.</p></div><img class="page-hero__logo" src="/assets/images/logo-color.png" alt="" aria-hidden="true"></section>
+<section class="section"><div class="container"><div class="grid recipe-list">
+<% if (recipes && recipes.length) { %>
+  <% recipes.forEach((recipe) => { %>
+    <article class="recipe-card reveal" style="--recipe-bg:<%= recipe.mainImageUrl ? `url('${recipe.mainImageUrl}') center/cover` : 'linear-gradient(145deg,#3c160b,#0b0806 70%)' %>"><div class="recipe-card__content"><div class="recipe-card__meta"><span><%= recipe.cookTime || 'Fresh from the smokehouse' %></span><span><%= recipe.rubPairing || 'Mills Smoke & Grill' %></span></div><h3><%= recipe.title %></h3><p><%= recipe.summary || '' %></p><a href="/recipes/<%= recipe.slug %>" class="recipe-card__link">Read recipe →</a></div></article>
+  <% }) %>
+<% } else { %>
+  <p class="lead">Our smokehouse recipes are being prepared. Check back soon.</p>
+<% } %>
+</div></div></section>
+<section class="section section--paper"><div class="container"><div class="section-head"><div><span class="eyebrow">The basic method</span><h2 class="display display--lg">Rub. Rest. Fire.</h2></div></div><div class="grid value-grid"><article class="value-card"><h3>01 · Dry the surface</h3><p>Pat meat or vegetables dry so the seasoning adheres and the exterior can brown properly.</p></article><article class="value-card"><h3>02 · Season evenly</h3><p>Use a light binder only when needed, then coat all sides without leaving heavy clumps.</p></article><article class="value-card"><h3>03 · Manage the heat</h3><p>Cook sugary rubs over moderate heat and pepper-forward rubs low and slow for a deep crust.</p></article></div></div></section>
+<%- include('partials/footer') %>

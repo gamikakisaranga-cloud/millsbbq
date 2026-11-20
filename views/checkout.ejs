@@ -1,0 +1,28 @@
+<%- include('partials/head', { title: 'Checkout | Mills Smoke & Grill', description: 'Complete your Mills Smoke & Grill order.' }) %>
+<%- include('partials/header', { page: 'checkout' }) %>
+<section class="page-hero"><div class="container page-hero__inner"><div class="breadcrumbs reveal"><a href="/">Home</a> / Checkout</div><span class="eyebrow reveal reveal-delay-1">Secure checkout</span><h1 class="display display--lg reveal reveal-delay-2">Finish your order.</h1><p class="lead reveal reveal-delay-3">Complete your Australian delivery details, then pay securely with Adyen.</p></div></section>
+<section class="section"><div class="container checkout-layout">
+  <form class="checkout-card form-grid" id="checkout-form">
+    <h2 class="field--full">Contact & delivery</h2>
+    <div class="field field--full"><label for="checkout-email">Email</label><input id="checkout-email" type="email" required></div>
+    <div class="field"><label for="first-name">First name</label><input id="first-name" required></div>
+    <div class="field"><label for="last-name">Last name</label><input id="last-name" required></div>
+    <div class="field"><label for="checkout-phone">Phone</label><input id="checkout-phone" required></div>
+    <div class="field field--full"><label for="address">Address</label><input id="address" required></div>
+    <div class="field"><label for="city">City</label><input id="city" required></div>
+    <div class="field"><label for="postal">Postal code</label><input id="postal" required></div>
+    <div class="field field--full"><label for="country">Country</label><select id="country" required><option value="Australia">Australia</option></select></div>
+    <div class="field field--full"><label for="coupon-code">Discount code (optional)</label><input id="coupon-code" autocomplete="off" placeholder="Enter a coupon code"></div>
+    <div class="field field--full">
+      <button class="btn btn--primary" id="place-order" type="submit">Continue to payment <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14m-5-5 5 5-5 5"/></svg></button>
+      <div class="payment-demo" id="checkout-status">Your order is created first, then you'll complete payment with Adyen.</div>
+    </div>
+    <div class="field field--full" id="adyen-section" hidden>
+      <h2 style="margin-bottom:14px">Pay securely</h2>
+      <div id="adyen-dropin"></div>
+      <p class="payment-demo" id="adyen-note"></p>
+    </div>
+  </form>
+  <aside class="checkout-card checkout-summary"><h2>Order summary</h2><div class="checkout-items" id="checkout-items"></div><div class="order-lines"><div class="order-line"><span>Subtotal</span><span id="checkout-subtotal">$0.00</span></div><div class="order-line"><span>Shipping</span><span id="checkout-shipping">Free</span></div><div class="order-line" id="checkout-discount-line" hidden><span>Discount</span><span id="checkout-discount">−$0.00</span></div><div class="order-line order-line--total"><span>Total</span><span id="checkout-total">$0.00</span></div></div></aside>
+</div></section>
+<%- include('partials/footer') %>
